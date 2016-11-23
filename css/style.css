@@ -1,0 +1,196 @@
+/* Fuentes a usar*/
+@font-face {
+    font-family: 'Roboto', sans-serif;
+    src: url('../font/Roboto/Roboto-Bold.ttf') format('truetype');
+}
+
+/* Inicio estilo del cuerpo de la pagina*/
+body{
+	margin: 0;
+	border: 0;
+	font-family: 'Roboto', Helvetica, Arial, sans-serif;
+	background: #181818;
+}
+/* Fin estilo del cuerpo de la pagina*/
+
+/* Inicio estilo menu de navegacion de la pagina*/
+
+.barraSuperior{
+	width: 100%;
+	border: 0;
+	background-color: #000;
+}
+
+.navBarra {
+    width: 80%;
+    float: left;
+    background: #000;
+    height: 70px;
+}
+
+.navBarraLateral{
+	width: 10%;
+    float: left;
+    background: #000;
+    height: 70px;
+}
+
+.navEnlace{
+	width:calc(100% / 4);
+	float: left;
+	background: #000;
+	height: 100%;
+}
+
+.enlace{
+	text-decoration: none;
+	text-align: center;
+	color: #fff;
+	font-size: 20px;
+}
+
+.enlace:hover{
+	font-weight: bold;
+	font-size: 22px;
+
+}
+
+.textoEnlace{
+	margin: 13% 0;
+}
+
+/* Fin estilo menu de navegacion de la pagina*/
+
+/* Incio contenido de la pagina web */
+.contenido{
+	background: #252525;
+	float: left;
+	width: 100%;
+	color: #fff;
+}
+
+.juego{
+	float: left;
+}
+.espacioContenido{
+	width: 30%;
+	float: left;
+}
+
+h1{
+	font-family: 'Roboto';
+	text-align: center;
+}
+
+a{
+	color: #fff;
+}
+.imgMapa{
+	margin: auto 25% 10% 25%;
+	width: 50%;
+	height: 50%;
+}
+
+.img1{
+	width: 100px;
+	height: 100px;
+}
+
+.img2{
+	width: 250px;
+	height: 60px;
+}
+
+.img3{
+	width: 40px;
+	height: 100px;
+}
+th, td {
+	text-align: center;;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Fin contenido de la pagina web */
+
+
+/* Inicio del pie de pagina */
+.pie{
+	width: 100%;
+	border: 0;
+	background: #181818;
+	height: 100px;
+	margin: 0;
+
+}
+.elaborado{
+	width: 40%;
+	float: left;
+	background: #181818;
+}
+
+.bordePie{
+	width: 40%;
+    float: left;
+}
+
+.textoPieElaborado{
+	font-family: "Roboto", Helvetica, Arial, sans-serif;
+	font-size: 15px;
+	color: #fff;
+	margin: 2% 5%;
+
+}
+
+/* Fin del pie de pagina*/
+
+@media screen and (max-width: 700px) {
+	.espacioContenido{
+		width: 0%;
+		height: 0%;
+		float: left;
+	}
+
+	.bordePie{
+		width: 20%;
+	    float: left;
+	}
+
+	.navBarraLateral{
+ 	   height: 50px;
+	}
+
+	.navBarra {
+	    height: 50px;
+	}
+
+	.enlace{
+		font-size: 12px;
+	}
+
+	.enlace:hover{
+		font-size: 14px;
+	}
+
+	.imgMapa{
+		margin: auto 0% 10% 0%;
+		width: 100%;
+		height: 100%;
+	}
+
+}
+
+
+/* Estilos para pantallas menores a 480px*/
+@media screen and (max-width: 480px) {
+	.espacioContenido{
+		width: 0%;
+		height: 0%;
+		float: left;
+	}
+
+	.bordePie{
+		width: 5%;
+	    float: left;
+	}
+
+}
