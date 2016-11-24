@@ -10,7 +10,7 @@
 //La nave sera destruida por una colision con una bala enemiga o con un enemigo
 //La nave se movera en cualquier direccion
 //La nave podra disparar en un intervalo de tiempo
-//El juego solo terminara cuando la nave sea destruida
+//El juego solo terminara cuando ya no hayan vidas.
 
 
 //Propiedades del enemigo
@@ -66,8 +66,8 @@ EnemyOvni.prototype.update = function(){
 
 		this.sigDisparo = juego.time.now + 800;
 	}
-
 	juego.physics.arcade.overlap(this.disparos, nave, bulletHitNave,  null, this);
+	
 };
 
 var juego = new Phaser.Game(480, 600, Phaser.CANVAS,  'bloqueJuego');
@@ -76,6 +76,12 @@ var audioFondo;
 var fondoJuego;
 var tecladoDirecciones;
 var botonDisparo;
+
+var nave;
+var vidasNave;
+var escudo;
+var tiempoEscudo;
+var escudoImg;
 
 var disparo;
 var disparoTiempo = 0; 
@@ -119,6 +125,10 @@ function movimientosNave(){
 	}
 	if(direcciones.up.isDown){nave.position.y -= 3;}
 	if(direcciones.down.isDown){nave.position.y += 3;}
+	if(escudo){
+		escudoImg.position.x = nave.x;
+		escudoImg.position.y = nave.y;
+	}
 }
 
 //Funcion de disparo de la nave
@@ -181,18 +191,42 @@ function bulletHitEnemy(enemigo, disparo){
 
 //Funcion que controla la colision de un disparo enemigo con la nave
 function bulletHitNave(nave, disparoEnemy){
-	disparo.destroy();
-	disparoEnemy.kill();
-	nave.kill();
-	animacionExplosion(nave);
+	if(!escudo){
+		disparoEnemy.kill();
+		vidasNave -= 1;
+		animacionExplosion(nave);
+		if(vidasNave == 0){
+			disparo.destroy();
+			nave.kill();
+			escudoImg.kill();
+		}
+		nave.position.x = juego.width/2;
+		nave.position.y = juego.height - juego.height/4;
+		escudo = true;
+		tiempoEscudo = juego.time.now;
+	}
 }
 
 //Funcion que controla la colision de la nave con un enemigo
 function naveHitEnemy(n, e){
-	disparo.destroy();
-	n.kill();
+	e.vidas = 0;
+	enemies[e.name].damage();
 	e.kill();
+	if(!escudo){
+		vidasNave -= 1;
+		nave.position.x = juego.width/2;
+		nave.position.y = juego.height - juego.height/4;
+	}
 	animacionExplosion(e);
+
+	if(vidasNave == 0){
+		disparo.destroy();
+		n.kill();
+		escudoImg.kill();
+	}
+	escudo = true;
+	tiempoEscudo = juego.time.now;
+	
 }
 
 //Funcion que muestra mensaje de fin del juego por muerte de la nave
@@ -260,6 +294,7 @@ var estadoPrincipal = {
 		juego.load.image('fondo', 'img/space.jpg');
 		juego.load.image('nave', 'img/nave.png');
 		juego.load.image('bala', 'img/disparo.png');
+		juego.load.image('shield', 'img/shield.png');
  		//juego.load.image('ovni1', 'img/ovni1.png');
  		juego.load.spritesheet('kaboom', 'img/Explosion-Sprite-Sheet.png',118,118,24);
  		juego.load.spritesheet('ovniAni', 'img/ovniSprite.png', 50, 42, 24);
@@ -294,6 +329,11 @@ var estadoPrincipal = {
 		nave.scale.setTo(0.1);
 		juego.physics.arcade.enable(nave);
 		nave.body.collideWorldBounds = true;
+
+		//Agregar escudo de la nave
+		escudoImg =	juego.add.sprite(-100, -100, 'shield');
+		escudoImg.anchor.setTo(0.5, 0.5);
+		escudoImg.scale.setTo(0.1);
 
 		//Agrega las balas enemigos
 		enemiesDisparo = juego.add.group();
@@ -353,6 +393,8 @@ var estadoPrincipal = {
 	 	timeCrea = 200;
 	 	valorCrea = 10;
 		puntaje = 0;
+		vidasNave = 3;
+		escudo = false;
 	},
 
 	//Funcion que actualiza los estados del juego
@@ -360,17 +402,22 @@ var estadoPrincipal = {
 		fondoJuego.tilePosition.y += 1;
 		for(var key in enemies){
 			juego.physics.arcade.overlap(disparo, enemies[key].ovni, bulletHitEnemy,  null, this);
-				enemies[key].update();
-				juego.physics.arcade.overlap(nave, enemies[key].ovni, 	naveHitEnemy, null, this);
-				enemies[key].update();	
+			enemies[key].update();	
+			juego.physics.arcade.overlap(nave, enemies[key].ovni, 	naveHitEnemy, null, this);
+			enemies[key].update();	
+			if(juego.time.now - tiempoEscudo > 2000){
+				escudo = false;
+				escudoImg.position.x = -100;
+				escudoImg.position.y = -100;
+			}
 		}
 		
 		crearEnemigos();
-
+		movimientosNave();
 		tiempoCreacion += 1;
 		enemiesLenght = 0;
 		for(key in enemies){enemiesLenght += 1;}
-		movimientosNave();
+		
 		disparosNave();
 		finDelJuego();
 	},
@@ -379,6 +426,7 @@ var estadoPrincipal = {
 	render: function(){
 		juego.debug.text('Puntaje: ' + puntaje, 0, 15);
 		//juego.debug.text('Enemigos: ' + enemiesLenght, 0, 32);
+		juego.debug.text('Vidas: ' + vidasNave, 0, 32);
 		juego.debug.text(textoFin, 100, 250, "#fff", "40px Arial");
 		juego.debug.text(textReiniciar, 170, 300, "#fff", "20px Arial");
 		juego.debug.text(textPause, 180, 300, "#fff", "40px Arial");
